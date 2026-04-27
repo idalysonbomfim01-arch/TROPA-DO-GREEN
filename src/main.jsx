@@ -75,7 +75,8 @@ return {
   reds,
   lastResults: userBets
     .filter(b => b.result !== 'pending')
-    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(-5)
+.reverse()
     .slice(0, 5)
     .map(b => b.result)
 }
