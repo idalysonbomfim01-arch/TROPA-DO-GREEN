@@ -65,17 +65,20 @@ function calcUserStats(profile, bets) {
     Math.round(profit * 0.6 + winRate * 2 + greens.length * 8 - reds.length * 5)
   );
 
-  return {
-    list,
-    totalStake,
-    greens: greens.length,
-    reds: reds.length,
-    profit,
-    winRate,
-    roi,
-    score,
-    settled
-  };
+return {
+  profile,
+  profit,
+  roi,
+  score,
+  settled,
+  greens,
+  reds,
+  lastResults: userBets
+    .filter(b => b.result !== 'pending')
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 5)
+    .map(b => b.result)
+}
 }
 
 function App() {
@@ -394,7 +397,22 @@ function Rank({ ranking }) {
               <div className="pos">#{index + 1}</div>
               <div>
                 <strong>{item.profile?.name || 'Usuário'}</strong>
-                <span>{item.settled} bets finalizadas • ROI {pct(item.roi)}</span>
+                <span>
+  {item.settled} bets finalizadas • ROI {pct(item.roi)}
+</span>
+
+<div className="last-bets">
+  Últimas bets:{' '}
+  {item.lastResults?.length ? (
+    item.lastResults.map((result, i) => (
+      <span key={i} className="bet-dot">
+        {result === 'green' ? '🟢' : '🔴'}
+      </span>
+    ))
+  ) : (
+    <span className="muted">Sem histórico</span>
+  )}
+</div>
               </div>
               <div className="rank-metrics">
                 <b>{item.score} pts</b>
